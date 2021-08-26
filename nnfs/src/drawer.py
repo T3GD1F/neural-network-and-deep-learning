@@ -13,6 +13,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 ### --- INIT --- ###
+### --- 2D Classification Problem --- ###
 class drawer:
     def __init__(self, default, points, y_true):
         plt.ion()
@@ -46,3 +47,22 @@ class drawer:
     def keep_open(self):
         plt.ioff()
         plt.show()
+
+
+### --- Regression Problem --- ###
+class drawer_reg(drawer):
+    def __init__(self, points, y_true):
+        plt.ion()
+
+        self.points = points
+
+        self.fig, self.ax = plt.subplots()
+        
+        self.ax.plot(points, y_true)
+        self.line1, = self.ax.plot(points, y_true)
+        
+
+    def update(self, data):
+        self.line1.set_ydata(data)
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()

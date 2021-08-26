@@ -1,9 +1,10 @@
 # Set-Alias -name python3 -Value C:/Users/felix/AppData/Local/Programs/Python/Python37-32/python.exe
 """
-main.py
+main_classification.py
 ~~~~~~~~~~
 
 Init and run the Neural Network.
+Specialised for Classification Problems.
 """
 
 ### --- IMPORTS --- ###

@@ -10,6 +10,7 @@ Each function provides forward pass and backpropagation.
 # Standard Import
 
 # Third-Party Import
+from typing import ForwardRef
 import numpy as np
 
 
@@ -75,3 +76,20 @@ class Activation_Sigmoid:
         Calculates Gradient of Inputs"""
         
         self.dinputs = dvalues * (1 - self.output) * self.output
+
+
+# Linear Activation
+class Activation_Linear:
+    def forward(self, inputs):
+        """Forward Pass
+        Does absolutly nothing"""
+
+        self.inputs = inputs
+        self.output = inputs
+
+    
+    def backward(self, dvalues):
+        """Backward Pass
+        Calculates Gradient"""
+
+        self.dinputs = dvalues.copy()       # f'(x) = 1, because f(x) = x

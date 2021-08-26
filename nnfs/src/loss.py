@@ -10,6 +10,7 @@ Each loss provides Forward Pass and Backpropagation.
 # Standard Import
 
 # Third-Party Import
+from matplotlib.pyplot import axis
 import numpy as np
 
 
@@ -112,3 +113,49 @@ class Loss_BinaryCrossentropy(Loss):
 
         self.dinputs = -(y_true / clipped_dvalues - (1 - y_true) / (1 - clipped_dvalues)) / outputs
         self.dinputs = self.dinputs / samples
+
+
+# Mean Squared Error Loss
+class Loss_MeanSquaredError(Loss):      # L2 loss
+    def forward(self, y_pred, y_true):
+        """Forward Pass
+        Calculates mean Squared Error ||*||_2^2"""
+
+        sample_losses = np.mean((y_true - y_pred)**2, axis=-1)
+
+        return sample_losses
+
+
+    def backward(self, dvalues, y_true):
+        """Backward Pass
+        Calculates Gradient"""
+
+        n_samples = len(dvalues)
+        n_outputs = len(dvalues[0])
+
+        self.dinputs = -2 * (y_true - dvalues) / n_outputs
+        self.dinputs = self.dinputs / n_samples
+
+    
+# Mean Absolute Error Loss
+"""L1 is more robust against outliers than L2.
+But L1 penalizes the error linearly. Therefor often L2 is used."""
+class Loss_MeanAbsoluteError(Loss):      # L1 loss
+    def forward(self, y_pred, y_true):
+        """Forward Pass
+        Calculates Mean Absolute Error ||*||_1"""
+
+        sample_losses = np.mean(np.abs(y_true - y_pred), axis=-1)
+
+        return sample_losses
+
+
+    def backward(self, dvalues, y_true):
+        """Backward Pass
+        Calculates Gradient"""
+
+        n_samples = len(dvalues)
+        n_outputs = len(dvalues[0])
+
+        self.dinputs = np.sign(y_true - dvalues) / n_outputs
+        self.dinputs = self.dinputs / n_samples
