@@ -30,6 +30,12 @@ class Activation_ReLU:
         
         self.dinputs = dvalues.copy()
         self.dinputs[self.inputs <= 0] = 0
+    
+
+    def predictions(self, outputs):
+        """Returns the Prediction of an Output"""
+        
+        return outputs
 
 
 # SoftMax
@@ -58,6 +64,12 @@ class Activation_Softmax:
             single_output = single_output.reshape(-1, 1)
             jacobian_matrix = np.diagflat(single_output) - np.dot(single_output, single_output.T)
             self.dinputs[index] = np.dot(jacobian_matrix, single_dvalues)
+    
+
+    def predictions(self, outputs):
+        """Returns the Prediction of an Output"""
+
+        return np.argmax(outputs, axis=1)
 
 
 # Sigmoid function
@@ -77,6 +89,12 @@ class Activation_Sigmoid:
         self.dinputs = dvalues * (1 - self.output) * self.output
 
 
+    def predictions(self, outputs):
+        """Returns the Prediction of an Output"""
+        
+        return (outputs > 0.5) * 1
+
+
 # Linear Activation
 class Activation_Linear:
     def forward(self, inputs):
@@ -92,3 +110,9 @@ class Activation_Linear:
         Calculates Gradient"""
 
         self.dinputs = dvalues.copy()       # f'(x) = 1, because f(x) = x
+    
+
+    def predictions(self, outputs):
+        """Returns the Prediction of an Output"""
+        
+        return outputs

@@ -95,3 +95,12 @@ class Layer_Dropout:
         """Backward Pass
         Calculates gradient of weights, biases and input"""
         self.dinputs = dvalues * self.binary_mask
+
+
+# Input Layer
+class Layer_Input:
+    def forward(self, inputs):
+        """Forward Pass of Input Layer"""
+       
+        self.output = inputs
+    
