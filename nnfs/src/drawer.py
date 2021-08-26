@@ -28,12 +28,22 @@ class drawer:
                         vmin=0, vmax=2)
         self.ax.scatter(points[:,0], -points[:,1], c=y_true, cmap=self.cmap)
 
+
     def update(self, data, delta):
         data = np.argmax(data, axis=1)
         data = np.reshape(data, (int(2./delta) + 1, int(2./delta) + 1))
 
         self.axim.set_data(data.T)
         self.fig.canvas.flush_events()
+
+
+    def update_bin(self, data, delta):
+        data = (data > 0.5) * 1
+        data = np.reshape(data, (int(2./delta) + 1, int(2./delta) + 1))
+
+        self.axim.set_data(data.T)
+        self.fig.canvas.flush_events()
+
 
     def keep_open(self):
         plt.ioff()

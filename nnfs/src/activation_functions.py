@@ -57,3 +57,20 @@ class Activation_Softmax:
             single_output = single_output.reshape(-1, 1)
             jacobian_matrix = np.diagflat(single_output) - np.dot(single_output, single_output.T)
             self.dinputs[index] = np.dots(jacobian_matrix, single_dvalues)
+
+
+# Sigmoid function
+class Activation_Sigmoid:
+    def forward(self, inputs):
+        """Forward Pass
+        Calculates Sigmoid"""
+
+        self.inputs = inputs
+        self.output = 1 / (1 + np.exp(-inputs))
+
+    
+    def backward(self, dvalues):
+        """Backward Pass
+        Calculates Gradient of Inputs"""
+        
+        self.dinputs = dvalues * (1 - self.output) * self.output

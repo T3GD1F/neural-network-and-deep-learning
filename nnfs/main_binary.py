@@ -24,23 +24,26 @@ from nnfs.datasets import spiral_data
 
 ### --- CODE --- ###
 nnfs.init()
-X, y = spiral_data(samples=100, classes=3)
+X, y = spiral_data(samples=100, classes=2)
+X, y = spiral_data(samples=100, classes=2)
+X, y = spiral_data(samples=100, classes=2)
 
 delta = 0.01
 xy = np.mgrid[-1:1.01:delta, -1:1.01:delta].reshape(2,-1).T
 new_drawer = drawer.drawer(xy, X, y)
 
+y = y.reshape(-1, 1)
 
 # Init
-dense1 = network.layers.Layer_Dense(2, 512, weight_regularizer_l2=5e-4, bias_regularizer_l2=5e-4)
+dense1 = network.layers.Layer_Dense(2, 64, weight_regularizer_l2=5e-4, bias_regularizer_l2=5e-4)
 activation1 = network.activation_functions.Activation_ReLU()
 
-dropout1 = network.layers.Layer_Dropout(0.1)
+dense2 = network.layers.Layer_Dense(64, 1)
+activation2 = network.activation_functions.Activation_Sigmoid()
 
-dense2 = network.layers.Layer_Dense(512, 3)
-loss_activation = network.Activation_Softmax_Loss_CategoricalCrossentropy()
+loss_function = network.loss.Loss_BinaryCrossentropy()
 
-optimizer = network.optimizers.Optimizer_Adam(learning_rate=0.05, decay=5e-5)
+optimizer = network.optimizers.Optimizer_Adam(decay=5e-7)
 
 
 ### --- Train --- ###
@@ -48,18 +51,15 @@ for epoch in range(10001):
     # Forward Pass
     dense1.forward(X)
     activation1.forward(dense1.output)
-    dropout1.forward(activation1.output)
-    dense2.forward(dropout1.output)
-
+    dense2.forward(activation1.output)
+    activation2.forward(dense2.output)
 
     # Accuracy and Loss
-    data_loss = loss_activation.forward(dense2.output, y)
-    regularization_loss = loss_activation.loss.regularization_loss(dense1) + loss_activation.loss.regularization_loss(dense2)
+    data_loss = loss_function.calculate(activation2.output, y)
+    regularization_loss = loss_function.regularization_loss(dense1) + loss_function.regularization_loss(dense2)
     loss = data_loss + regularization_loss 
 
-    predictions = np.argmax(loss_activation.output, axis=1)
-    if len(y.shape) == 2:
-        y = np.argmax(y, axis=1)
+    predictions = (activation2.output > 0.5) * 1
     accuracy = np.mean(predictions == y)
 
     if not epoch % 100:
@@ -72,10 +72,10 @@ for epoch in range(10001):
     
 
     # Backward Pass
-    loss_activation.backward(loss_activation.output, y)
-    dense2.backward(loss_activation.dinputs)
-    dropout1.backward(dense2.dinputs)
-    activation1.backward(dropout1.dinputs)
+    loss_function.backward(activation2.output, y)
+    activation2.backward(loss_function.dinputs)
+    dense2.backward(activation2.dinputs)
+    activation1.backward(dense2.dinputs)
     dense1.backward(activation1.dinputs)
 
 
@@ -91,24 +91,23 @@ for epoch in range(10001):
         dense1.forward(xy)
         activation1.forward(dense1.output)
         dense2.forward(activation1.output)
-        loss_activation.forward(dense2.output, np.argmax(dense2.output, axis=1))
+        activation2.forward(dense2.output)
        
-        output = loss_activation.output
-        new_drawer.update(output, delta)
+        output = np.argmax(activation2.output, axis=1)
+        new_drawer.update_bin(output, delta)
 
 
 ### --- Validation --- ###
 X_test, y_test = spiral_data(samples=100, classes=3)
+y_test = y_test.reshape(-1, 1)
 
 dense1.forward(X_test)
 activation1.forward(dense1.output)
 dense2.forward(activation1.output)
-loss = loss_activation.forward(dense2.output, y_test)
+activation2.forward(dense2.output)
 
-predictions = np.argmax(loss_activation.output, axis=1)
-if len(y_test.shape) == 2:
-    y_test = np.argmax(y_test, axis=1)
-accuracy = np.mean(predictions == y_test)
+predictions = (activation2.output > 0.5) * 1
+accuracy = np.mean(predictions == y)
 
 print(f'validation, acc: {accuracy:.3f}, loss: {loss:.3f}')
 
