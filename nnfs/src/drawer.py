@@ -23,7 +23,7 @@ class drawer:
         self.fig, self.ax = plt.subplots()
         
         self.axim = self.ax.imshow(default, cmap=self.cmap, 
-                        interpolation='bicubic', alpha=.25, extent=[-1.25,1.25,-1.25,1.25], 
+                        interpolation='bicubic', alpha=.25, extent=[-1,1,-1,1], 
                         vmin=0, vmax=2)
         self.ax.scatter(points[:,0], -points[:,1], c=y_true, cmap=self.cmap)
 
@@ -37,7 +37,7 @@ class drawer:
 
 
     def update_bin(self, data, delta):
-        data = (data > 0.5) * 1
+        data = (data > 0.5) * 2
         data = np.reshape(data, (int(2./delta) + 1, int(2./delta) + 1))
         self.axim.set_data(data.T)
         self.fig.canvas.flush_events()

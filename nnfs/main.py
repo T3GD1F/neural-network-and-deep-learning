@@ -40,7 +40,7 @@ dropout1 = network.layers.Layer_Dropout(0.1)
 dense2 = network.layers.Layer_Dense(512, 3)
 loss_activation = network.Activation_Softmax_Loss_CategoricalCrossentropy()
 
-optimizer = network.optimizers.Optimizer_Adam(learning_rate=0.05, decay=5e-5)
+optimizer = network.optimizers.Optimizer_Adam(learning_rate=0.05, decay=5e-6)
 
 
 ### --- Train --- ###
