@@ -16,8 +16,6 @@ from src import drawer
 
 # Third-Party Import
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
 import nnfs
 from nnfs.datasets import sine_data

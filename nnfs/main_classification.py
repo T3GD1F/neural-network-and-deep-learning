@@ -16,8 +16,6 @@ from src import drawer
 
 # Third-Party Import
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
 import nnfs
 from nnfs.datasets import spiral_data
@@ -29,7 +27,7 @@ X, y = spiral_data(samples=100, classes=3)
 
 delta = 0.01
 xy = np.mgrid[-1:1.01:delta, -1:1.01:delta].reshape(2,-1).T
-new_drawer = drawer.drawer(xy, X, y)
+new_drawer = drawer.drawer_class(xy, X, y)
 
 
 # Init
@@ -39,7 +37,7 @@ activation1 = network.activation_functions.Activation_ReLU()
 dropout1 = network.layers.Layer_Dropout(0.1)
 
 dense2 = network.layers.Layer_Dense(512, 3)
-loss_activation = network.Activation_Softmax_Loss_CategoricalCrossentropy()
+loss_activation = network.activation_loss.Activation_Softmax_Loss_CategoricalCrossentropy()
 
 optimizer = network.optimizers.Optimizer_Adam(learning_rate=0.05, decay=5e-6)
 

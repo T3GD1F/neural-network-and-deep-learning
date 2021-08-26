@@ -10,7 +10,6 @@ Each loss provides Forward Pass and Backpropagation.
 # Standard Import
 
 # Third-Party Import
-from matplotlib.pyplot import axis
 import numpy as np
 
 

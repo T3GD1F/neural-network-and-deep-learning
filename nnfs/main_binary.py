@@ -16,8 +16,6 @@ from src import drawer
 
 # Third-Party Import
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
 import nnfs
 from nnfs.datasets import spiral_data
@@ -29,7 +27,7 @@ X, y = spiral_data(samples=100, classes=2)
 
 delta = 0.01
 xy = np.mgrid[-1:1.01:delta, -1:1.01:delta].reshape(2,-1).T
-new_drawer = drawer.drawer(xy, X, y)
+new_drawer = drawer.drawer_binary(xy, X, y)
 
 y = y.reshape(-1, 1)
 
@@ -94,7 +92,7 @@ for epoch in range(10001):
         dense2.forward(activation1.output)
         activation2.forward(dense2.output)
 
-        new_drawer.update_bin(activation2.output, delta)
+        new_drawer.update(activation2.output, delta)
 
 
 ### --- Validation --- ###

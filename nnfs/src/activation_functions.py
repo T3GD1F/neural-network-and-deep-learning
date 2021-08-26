@@ -10,7 +10,6 @@ Each function provides forward pass and backpropagation.
 # Standard Import
 
 # Third-Party Import
-from typing import ForwardRef
 import numpy as np
 
 

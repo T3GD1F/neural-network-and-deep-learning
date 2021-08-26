@@ -11,7 +11,6 @@ Each layer provides forward pass and backpropagation.
 
 # Third-Party Import
 import numpy as np
-from numpy.lib.financial import rate
 
 
 ### --- CODE --- ###
