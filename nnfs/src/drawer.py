@@ -20,7 +20,6 @@ class drawer:
         colors = [(0, 0, 1), (0, 1, 0), (1, 0, 0)]
         cmap_name = 'my_list'
         self.cmap = LinearSegmentedColormap.from_list(cmap_name, colors, N=3)
-
         self.fig, self.ax = plt.subplots()
         
         self.axim = self.ax.imshow(default, cmap=self.cmap, 

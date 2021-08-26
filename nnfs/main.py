@@ -83,7 +83,7 @@ for epoch in range(10001):
     optimizer.pre_update_params()
     optimizer.update_params(dense1)
     optimizer.update_params(dense2)
-    optimizer.post_update_paramy()
+    optimizer.post_update_params()
 
 
     # Plot
