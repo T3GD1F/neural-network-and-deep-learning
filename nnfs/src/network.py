@@ -14,12 +14,14 @@ Also includes different learning algorithms
 from src import layers
 from src import activation_functions
 from src import loss
+from src import optimizers
 
 # Third-Party Import
 import numpy as np
 
 
 ### --- CODE --- ###
+# Softmax + Categorical Cross Entropy
 class Activation_Softmax_Loss_CategoricalCrossentropy():
     def __init__(self):
         """Softmax Classifier

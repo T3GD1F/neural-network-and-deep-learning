@@ -14,7 +14,7 @@ import numpy as np
 
 
 ### --- CODE --- ###
-#### Dense Layer
+# Dense Layer
 class Layer_Dense:
     def __init__(self, n_inputs, n_neurons):
         """Contains the Number of Inputs and Neurons.
@@ -32,9 +32,10 @@ class Layer_Dense:
         self.inputs = inputs 
         self.output = np.dot(inputs, self.weights) + self.biases 
 
+
     def backward(self, dvalues):
         """Backward Pass
         Calculates gradient of weights, biases and input"""
-        self.dweights = np.dot(self.input.T, dvalues)
-        self.biases = np.sum(dvalues, axis=0, keepdims=True)
+        self.dweights = np.dot(self.inputs.T, dvalues)
+        self.dbiases = np.sum(dvalues, axis=0, keepdims=True)
         self.dinputs = np.dot(dvalues, self.weights.T)

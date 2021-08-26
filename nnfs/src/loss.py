@@ -20,11 +20,13 @@ class Loss:
         """Loss
         Calculates data and regularization loss
         for a given model"""
+        
         sample_losses = self.forward(output, y)
         data_loss = np.mean(sample_losses)
 
         return data_loss
 
+# Categorical Cross Entropy Loss
 class Loss_CategoricalCrossentropy(Loss):
     def forward(self, y_pred, y_true):
         """Forward Pass
@@ -56,11 +58,11 @@ class Loss_CategoricalCrossentropy(Loss):
         Calculates Gradient"""
 
         n_samples = len(dvalues)
-        labels = len(dvalues[0])
+        n_labels = len(dvalues[0])
 
         # Mask for sparse -> one hot
         if len(y_true.shape) == 1:
-            y_true = np.eye(labels)[y_true]
+            y_true = np.eye(n_labels)[y_true]
         
         self.dinputs = -y_true / dvalues
         self.dinputs = self.dinputs / n_samples
