@@ -52,7 +52,7 @@ class Loss_CategoricalCrossentropy(Loss):
         """Forward Pass
         Calculates Categorical Crossentropy Loss"""
 
-        n_samples = len(y_pred)
+        samples = len(y_pred)
 
         # Clip data to prevent division by 0
         # Clip both sides to not drag mean
@@ -61,7 +61,7 @@ class Loss_CategoricalCrossentropy(Loss):
         # Mask for categorical labels
         if len(y_true.shape) == 1:
             correct_confidences = y_pred_clipped[
-                range(n_samples), y_true]
+                                    range(samples), y_true]
         elif len(y_true.shape) == 2:
             correct_confidences = np.sum(
                 y_pred_clipped * y_true,
@@ -77,15 +77,15 @@ class Loss_CategoricalCrossentropy(Loss):
         """Backward Pass
         Calculates Gradient"""
 
-        n_samples = len(dvalues)
-        n_labels = len(dvalues[0])
+        samples = len(dvalues)
+        labels = len(dvalues[0])
 
         # Mask for sparse -> one hot
         if len(y_true.shape) == 1:
-            y_true = np.eye(n_labels)[y_true]
+            y_true = np.eye(labels)[y_true]
         
         self.dinputs = -y_true / dvalues
-        self.dinputs = self.dinputs / n_samples
+        self.dinputs = self.dinputs / samples
 
 
 class Loss_BinaryCrossentropy(Loss):

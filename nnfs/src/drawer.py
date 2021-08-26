@@ -40,7 +40,6 @@ class drawer:
     def update_bin(self, data, delta):
         data = (data > 0.5) * 1
         data = np.reshape(data, (int(2./delta) + 1, int(2./delta) + 1))
-
         self.axim.set_data(data.T)
         self.fig.canvas.flush_events()
 
