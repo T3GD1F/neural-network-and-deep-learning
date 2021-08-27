@@ -18,10 +18,28 @@ class Accuracy:
     def calculate(self, predictions, y):
         """Standard Method for calculating accuracy"""
         
-        comparison = self.compare(predictions, y)
-        accuracy = np.mean(comparison)
+        comparisons = self.compare(predictions, y)
+        accuracy = np.mean(comparisons)
+
+        self.accumulated_sum += np.sum(comparisons)
+        self.accumulated_count += len(comparisons)
 
         return accuracy
+    
+
+    def calculate_accumulated(self):
+        """Calculates accumulated Loss"""
+        
+        accuracy = self.accumulated_sum / self.accumulated_count
+
+        return accuracy
+    
+
+    def new_pass(self):
+        """Resets Variables for accumulated Loss"""
+        
+        self.accumulated_sum = 0
+        self.accumulated_count = 0
 
 
 # Accuracy for Regression
