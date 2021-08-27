@@ -10,6 +10,7 @@ Also includes different learning algorithms
 ### --- IMPORTS --- ###
 # Standard Import
 import pickle
+import copy
 
 # Own Import
 from src import layers
@@ -294,3 +295,34 @@ class Model:
 
         with open(path, 'rb') as f:
             self.set_parameters(pickle.load(f))
+
+
+    def save(self, path):
+        """Hard copy of the complete model"""
+
+        model = copy.deepcopy(self)
+
+        # Clean Model
+        model.loss.new_pass()
+        model.accuracy.new_pass()
+
+        model.input_layer.__dict__.pop('output', None)
+        model.loss.__dict__.pop('dinputs', None)
+
+        for layer in model.layers:
+            for property in ['inputs', 'output', 'dinputs', 'dweights', 'dbiases']:
+                layer.__dict__.pop(property, None)
+        
+        # Save Model
+        with open(path, 'wb') as f:
+            pickle.dump(model, f)
+
+
+    @staticmethod
+    def load(path):
+        """Loads a model"""
+
+        with open(path, 'rb') as f:
+            model = pickle.load(f)
+        
+        return model
