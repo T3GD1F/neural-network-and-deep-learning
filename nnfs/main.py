@@ -45,18 +45,18 @@ X = X[keys]
 y = y[keys]
 
 # Scale and Shape Data
-X = (X.astype(np.float32) - 127.5) / 127.5
-X_test = (X_test.astype(np.float32) - 127.5) / 127.5
-
 X = X.reshape(X.shape[0], -1)
 X_test = X_test.reshape(X_test.shape[0], -1)
+
+X = (X.astype(np.float32) - 127.5) / 127.5
+X_test = (X_test.astype(np.float32) - 127.5) / 127.5
 
 print("% Successfully preprocessed Data", "\n")
 
 
 ### Neural Network
 # Init Model
-n = 64
+n = 128
 model = network.Model()
 
 model.add(network.layers.Layer_Dense(X.shape[1], n))
@@ -76,10 +76,12 @@ model.finalize()
 
 # Train Model
 model.train(X, y, validation_data=(X_test, y_test),
-    epochs = 5,
+    epochs = 10,
     batch_size=128,
     print_every = 100
 )
+
+model.evaluate(X_test, y_test)
 
 # plt.imshow((X[0], reshape(28, 28)), cmap='gray')
 # plt.show()
