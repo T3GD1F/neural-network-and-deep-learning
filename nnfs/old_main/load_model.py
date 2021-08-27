@@ -27,24 +27,6 @@ nnfs.init()
 
 ### --- CODE --- ###
 ### Hyperparameters
-EPOCHS = 10
-BATCH_SIZE = 128
-
-
-### Labels
-fashion_mnist_labels = {
-    0: 'T-shirt/top',
-    1: 'Trouser',
-    2: 'Pullover',
-    3: 'Dress',
-    4: 'Coat',
-    5: 'Sandal',
-    6: 'Shirt',
-    7: 'Sneaker',
-    8: 'Bag',
-    9: 'Ankle boot'
-}
-
 
 ### Load Data (run get_mnist.py before executing this for first time)
 print("% Start Loading Data")
@@ -59,11 +41,6 @@ np.random.shuffle(keys)
 X = X[keys]
 y = y[keys]
 
-keys = np.array(range(X_test.shape[0]))
-np.random.shuffle(keys)
-X_test = X_test[keys]
-y_test = y_test[keys]
-
 # Scale and Shape Data
 X = X.reshape(X.shape[0], -1)
 X_test = X_test.reshape(X_test.shape[0], -1)
@@ -77,20 +54,4 @@ print("% Successfully preprocessed Data", "\n")
 ### Neural Network
 # Init Model
 model = network.Model.load('fashion_mnist.model')
-
-
-confidences = model.predict(X_test[:5])
-predictions = model.output_layer_activation.predictions(confidences)
-
-
-for X_value, prediction, y_test_label in zip(X_test[:5], predictions, y_test[:5]):
-
-    print("Model:", fashion_mnist_labels[prediction],
-          "  Real:", fashion_mnist_labels[y_test_label])
-
-    plt.imshow(X_value.reshape(28, 28), cmap='gray')
-    plt.show()
-
-# plt.imshow((X[0], reshape(28, 28)), cmap='gray')
-# plt.show()
-# exit()
+model.evaluate(X_test, y_test)
