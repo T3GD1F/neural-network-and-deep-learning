@@ -8,6 +8,7 @@ Init and run the Neural Network.
 
 ### --- IMPORTS --- ###
 # Standard Import
+import os
 
 # Own Import
 from src import network
@@ -21,11 +22,14 @@ from nnfs.datasets import spiral_data
 
 
 ### --- CODE --- ###
+### Load Data (run get_mnist.py before executing this for first time)
 nnfs.init()
 X, y = spiral_data(samples=100, classes=3)
 X_test, y_test = spiral_data(samples=100, classes=3)
 
-### Init Model
+
+### Neural Network
+# Init Model
 n = 512
 model = network.Model()
 
@@ -43,6 +47,7 @@ model.set(
 
 model.finalize()
 
+# Train Model
 model.train(X, y, validation_data=(X_test, y_test),
     epochs = 10000,
     print_every = 100

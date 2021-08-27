@@ -4,7 +4,12 @@
 nnfs/test.py
 nnfs/control.py
 
+# MNIST
+nnfs/fashion_mnist_images.zip
+nnfs/fashion_mnist_images/*
+
 # LaTeX
 
 # Whitelist
+
 
