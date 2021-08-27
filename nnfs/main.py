@@ -10,7 +10,7 @@ Init and run the Neural Network.
 # Standard Import
 import os
 
-from numpy.core.fromnumeric import reshape
+from matplotlib import image
 
 # Own Import
 from src import network
@@ -20,6 +20,7 @@ from src import drawer
 # Third-Party Import
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 
 import nnfs
 nnfs.init()
@@ -47,49 +48,23 @@ fashion_mnist_labels = {
 
 
 ### Load Data (run get_mnist.py before executing this for first time)
-print("% Start Loading Data")
-X, y, X_test, y_test = loader.create_data_mnist('fashion_mnist_images')
-print("% Successfully loaded Data", "\n")
-
-
-print("% Preprocess Data")
-# Shuffle Data
-keys = np.array(range(X.shape[0]))
-np.random.shuffle(keys)
-X = X[keys]
-y = y[keys]
-
-keys = np.array(range(X_test.shape[0]))
-np.random.shuffle(keys)
-X_test = X_test[keys]
-y_test = y_test[keys]
-
-# Scale and Shape Data
-X = X.reshape(X.shape[0], -1)
-X_test = X_test.reshape(X_test.shape[0], -1)
-
-X = (X.astype(np.float32) - 127.5) / 127.5
-X_test = (X_test.astype(np.float32) - 127.5) / 127.5
-
-print("% Successfully preprocessed Data", "\n")
+image_data = cv2.imread('example_data/tshirt.png', cv2.IMREAD_GRAYSCALE)        # Load
+image_data = cv2.resize(image_data, (28, 28))                                   # Resize
+image_data = 255 - image_data                                                   # Invert
+image_data = image_data.reshape(1, -1)                                          # Reshape
+image_data = (image_data.astype(np.float32) - 127.5) / 127.5                    # Rescale
 
 
 ### Neural Network
 # Init Model
 model = network.Model.load('fashion_mnist.model')
 
-
-confidences = model.predict(X_test[:5])
+confidences = model.predict(image_data)
 predictions = model.output_layer_activation.predictions(confidences)
 
+prediction = fashion_mnist_labels[predictions[0]]
 
-for X_value, prediction, y_test_label in zip(X_test[:5], predictions, y_test[:5]):
-
-    print("Model:", fashion_mnist_labels[prediction],
-          "  Real:", fashion_mnist_labels[y_test_label])
-
-    plt.imshow(X_value.reshape(28, 28), cmap='gray')
-    plt.show()
+print(prediction)
 
 # plt.imshow((X[0], reshape(28, 28)), cmap='gray')
 # plt.show()
