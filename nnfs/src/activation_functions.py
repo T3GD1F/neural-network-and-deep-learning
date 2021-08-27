@@ -16,7 +16,7 @@ import numpy as np
 ### --- CODE --- ###
 # ReLU
 class Activation_ReLU:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         """Forward Pass
         Calculates ReLU of Input"""
 
@@ -40,7 +40,7 @@ class Activation_ReLU:
 
 # SoftMax
 class Activation_Softmax:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         """Forward Pass
         Calculates Softmax of Input
         (Normalize Input via Exp with 
@@ -74,7 +74,7 @@ class Activation_Softmax:
 
 # Sigmoid function
 class Activation_Sigmoid:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         """Forward Pass
         Calculates Sigmoid"""
 
@@ -97,7 +97,7 @@ class Activation_Sigmoid:
 
 # Linear Activation
 class Activation_Linear:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         """Forward Pass
         Does absolutly nothing"""
 

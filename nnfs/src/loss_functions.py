@@ -43,13 +43,16 @@ class Loss:
         self.trainable_layers = trainable_layers
 
 
-    def calculate(self, output, y):
+    def calculate(self, output, y, *, include_regularization=False):
         """Loss
         Calculates data and regularization loss
         for a given model"""
         
         sample_losses = self.forward(output, y)
         data_loss = np.mean(sample_losses)
+
+        if not include_regularization:
+            return data_loss
 
         return data_loss, self.regularization_loss()
 

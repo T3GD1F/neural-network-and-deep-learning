@@ -13,7 +13,7 @@ Also includes different learning algorithms
 # Own Import
 from src import layers
 from src import activation_functions
-from src import loss
+from src import loss_functions
 from src import optimizers
 from src import activation_loss
 from src import accuracy
@@ -29,6 +29,7 @@ class Model:
         Class for fast Usage of """ 
 
         self.layers = []
+        self.softmax_classifier_output = None
 
     
     def add(self, layer):
@@ -77,18 +78,24 @@ class Model:
         
         self.loss.remember_trainable_layers(self.trainable_layers)
 
+        # check for faster gradient calculation (Softmax + Categorical Cross Entropy)
+        if isinstance(self.layers[-1], activation_functions.Activation_Softmax) and \
+           isinstance(self.loss, loss_functions.Loss_CategoricalCrossentropy):
+            self.softmax_classifier_output = activation_loss.Activation_Softmax_Loss_CategoricalCrossentropy()
 
-    def train(self, X, y, *, epochs=1, print_every=1):
+
+
+    def train(self, X, y, *, epochs=1, print_every=1, validation_data=None):
         """Method to train the Network"""
 
         self.accuracy.init(y)
 
         for epoch in range(1, epochs+1):
             # Forward Pass
-            output = self.forward(X)
+            output = self.forward(X, training=True)
             
             # Loss
-            data_loss, regularization_loss = self.loss.calculate(output, y)
+            data_loss, regularization_loss = self.loss.calculate(output, y, include_regularization=True)
             loss = data_loss + regularization_loss
 
             # Prediction & Accuracy
@@ -109,18 +116,34 @@ class Model:
                 print(f'epoch: {epoch}, ' +
                       f'acc: {accuracy:.3f}, ' +
                       f'loss: {loss:.3f} (' +
-                      f'data_loss: {data_loss:.3f},' +
-                      f'reg_loss: {regularization_loss:.3f}),' +
+                      f'data_loss: {data_loss:.3f}, ' +
+                      f'reg_loss: {regularization_loss:.3f}), ' +
                       f'lr: {self.optimizer.current_learning_rate}')
 
-    def forward(self, X):
+
+        # Validation
+        if validation_data is not None:
+            X_val, y_val = validation_data
+
+            output = self.forward(X_val, training=False)
+            loss = self.loss.calculate(output, y_val)
+
+            predictions = self.output_layer_activation.predictions(output)
+            accuracy = self.accuracy.calculate(predictions, y_val)
+
+            print(f'validation: ' + 
+                  f'acc: {accuracy:.3f}, ' +
+                  f'loss: {loss:.3f}')
+
+
+    def forward(self, X, training):
         """Performs Forward Pass
         via loop, uses prev/next layer from finalize"""
 
-        self.input_layer.forward(X)
+        self.input_layer.forward(X, training)
 
         for layer in self.layers:
-            layer.forward(layer.prev.output)
+            layer.forward(layer.prev.output, training)
         
         return layer.output
 
@@ -129,6 +152,16 @@ class Model:
         """Backward Pass
         Calculates Gradient, similar to Froward Pass"""
 
+        if self.softmax_classifier_output is not None:
+            self.softmax_classifier_output.backward(output, y)
+
+            self.layers[-1].dinputs = self.softmax_classifier_output.dinputs
+
+            for layer in reversed(self.layers[:-1]):
+                layer.backward(layer.next.dinputs)
+
+            return
+        
         self.loss.backward(output, y)
 
         for layer in reversed(self.layers):

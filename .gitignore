@@ -1,6 +1,10 @@
 # Python
 *.pyc
 
+nnfs/test.py
+nnfs/control.py
+
 # LaTeX
 
 # Whitelist
+
