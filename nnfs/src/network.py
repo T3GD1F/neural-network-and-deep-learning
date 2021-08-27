@@ -9,6 +9,7 @@ Also includes different learning algorithms
 
 ### --- IMPORTS --- ###
 # Standard Import
+import pickle
 
 # Own Import
 from src import layers
@@ -38,14 +39,18 @@ class Model:
         self.layers.append(layer)
 
     
-    def set(self, *, loss, optimizer, accuracy):
+    def set(self, *, loss=None, optimizer=None, accuracy=None):
         """Sets Optimizer, Loss and Accuracy function"""
 
-        self.loss = loss
-        self.optimizer = optimizer
-        self.accuracy = accuracy
+        if loss is not None:
+            self.loss = loss
+        
+        if optimizer is not None:
+            self.optimizer = optimizer
+        
+        if accuracy is not None:
+            self.accuracy = accuracy
 
-    
 
     def finalize(self):
         """Defines the previous and next layer
@@ -82,7 +87,10 @@ class Model:
         if isinstance(self.layers[-1], activation_functions.Activation_Softmax) and \
            isinstance(self.loss, loss_functions.Loss_CategoricalCrossentropy):
             self.softmax_classifier_output = activation_loss.Activation_Softmax_Loss_CategoricalCrossentropy()
-
+        
+        # Update Loss with trainable layers
+        if self.loss is not None:
+            self.loss.remember_trainable_layers(self.trainable_layers)          
 
 
     def train(self, X, y, *, 
@@ -254,3 +262,35 @@ class Model:
               f'acc: {validation_accuracy:.3f}, ' +
               f'loss: {validation_loss:.3f}' + 
               f'\n')
+
+
+    def get_parameters(self):
+        """Gets Weights and Biases for each layer"""
+        
+        parameters = []
+
+        for layer in self.trainable_layers:
+            parameters.append(layer.get_parameters())
+
+        return parameters
+
+
+    def set_parameters(self, parameters):
+        """Sets Weights and Biases for each layer"""
+
+        for parameter_set, layer in zip(parameters, self.trainable_layers):
+            layer.set_parameters(*parameter_set)
+
+
+    def save_parameters(self, path):
+        """Writes Parameters to a file"""
+
+        with open(path, 'wb') as f:
+            pickle.dump(self.get_parameters(), f)
+    
+
+    def load_parameters(self, path):
+        """Reads Parameters from a file"""
+
+        with open(path, 'rb') as f:
+            self.set_parameters(pickle.load(f))

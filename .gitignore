@@ -8,6 +8,9 @@ nnfs/control.py
 nnfs/fashion_mnist_images.zip
 nnfs/fashion_mnist_images/*
 
+# Model
+*.parms
+
 # LaTeX
 
 # Whitelist

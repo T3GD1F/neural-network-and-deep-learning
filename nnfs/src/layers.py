@@ -69,6 +69,21 @@ class Layer_Dense:
                             self.biases
 
         self.dinputs = np.dot(dvalues, self.weights.T)
+    
+
+    def get_parameters(self):
+        """Returns Weights and Biases
+        Good for Saving progress."""
+        
+        return self.weights, self.biases
+    
+
+    def set_parameters(self, weights, biases):
+        """Sets Weights and Biases
+        Good for Saving progress."""
+    
+        self.weights = weights
+        self.biases = biases
 
 
 # Dropout
